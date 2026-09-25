@@ -1,0 +1,60 @@
+# ---- Build output ----
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ll]og/
+[Ll]ogs/
+publish/
+*.pubxml
+*.publishproj
+
+# ---- NuGet ----
+*.nupkg
+*.snupkg
+packages/
+!**/packages/build/
+project.lock.json
+
+# ---- IDEs: Visual Studio / Rider / VS Code ----
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+*.DotSettings.user
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ---- Test results / coverage ----
+[Tt]est[Rr]esult*/
+*.trx
+coverage/
+*.coverage
+*.coveragexml
+
+# ---- Secrets / local config ----
+# Real config has credentials; commit appsettings.Example.json instead
+DigitalStation.Api/appsettings.json
+appsettings.*.local.json
+appsettings.Production.json
+secrets.json
+*.env
+.env*
+
+# ---- Uploaded / temp files ----
+*.log
+*.tmp
+wwwroot/uploads/
+
+# ---- OS files ----
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini

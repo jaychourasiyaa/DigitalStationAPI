@@ -1,0 +1,60 @@
+using DigitalStation.Api;
+using DigitalStation.Contract.Interfaces;
+using DigitalStation.Contract.Utility;
+using DigitalStation.Provider;
+using DigitalStation.Provider.Database;
+using DigitalStation.Provider.Services;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using System.Text.Json.Serialization;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+
+}));
+// Add services to the container.
+AuthenticationDetails.AddAuthenticationDetails(builder);
+Bootstrapper.AddBootstapperServices(builder);
+
+//adding db context
+var connectionString = builder.Configuration.GetConnectionString("connectionString");
+
+builder.Services.AddDbContext<dbContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("Email"));
+
+builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<EmailConfiguration>>().Value);
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+}); ;
+builder.Services.AddHttpContextAccessor();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+app.UseCors("MyPolicy");
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseDeveloperExceptionPage();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+
+
