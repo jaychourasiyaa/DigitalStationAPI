@@ -155,7 +155,10 @@ namespace DigitalStation.Provider.Services
                     // Send the email
                     using (var client = new SmtpClient())
                     {
-                        await client.ConnectAsync(emailConfiguration.SmtpServer, emailConfiguration.SmtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+                        // Shared hosting blocks outbound CRL/OCSP lookups, so revocation checks can't complete there
+                        client.CheckCertificateRevocation = false;
+                        // Auto: SSL on 465, STARTTLS on 587
+                        await client.ConnectAsync(emailConfiguration.SmtpServer, emailConfiguration.SmtpPort, MailKit.Security.SecureSocketOptions.Auto);
                         await client.AuthenticateAsync(emailConfiguration.Username, emailConfiguration.Password);
                         await client.SendAsync(email);
                         await client.DisconnectAsync(true);
